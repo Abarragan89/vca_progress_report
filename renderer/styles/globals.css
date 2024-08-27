@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: #e81aaa;
+  --secondary-color: #34a853;
+  --accent-color: #fbbc05;
+  --background-color: #ffffff;
+  --text-color: #050328;
+}
+
+body {
+  background: linear-gradient(to bottom, rgb(92, 6, 6), #41040e);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

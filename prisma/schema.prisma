@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./vca_progress_reports.db"
+}
+
+model Assessments {
+  id             Int             @id @default(autoincrement())
+  testName       String
+  score          Int
+  subjectId Int
+  subject  Subject  @relation(fields: [subjectId], references: [id])
+}
+
+model Subject {
+  id             Int             @id @default(autoincrement())
+  name           String
+  grade          Int?
+  status         String?
+  comment        String
+  assessments    Assessments[]
+  studentReport  StudentReport?  @relation(fields: [studentReportId], references: [id])
+  studentReportId Int?
+}
+
+model StudentReport {
+  id       Int       @id @default(autoincrement())
+  studentName String
+  subjects Subject[]
+  absences Int
+  tardies Int
+  teacherName String
+  otherComments String
+  date DateTime
+  reportingPeriod ReportingPeriod? @relation(fields: [reportingPeriodId], references: [id])
+  reportingPeriodId Int?
+}
+
+model ReportingPeriod {
+  id       Int       @id @default(autoincrement())
+  name String
+  studentReports StudentReport[]
+  date DateTime
+  roomNumber String
+  gradeLevel String
+}
+
+

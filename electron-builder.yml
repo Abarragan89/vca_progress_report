@@ -1,0 +1,12 @@
+appId: com.villageReports.nextron
+productName: Village Reports
+copyright: Copyright © 2024 Anthony Barragan
+directories:
+  output: dist
+  buildResources: resources
+files:
+  - from: .
+    filter:
+      - package.json
+      - app
+publish: null
