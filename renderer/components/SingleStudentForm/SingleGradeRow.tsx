@@ -1,5 +1,6 @@
-import { StudentData, Subject } from "../../types/student";
-import { FormEvent, SyntheticEvent, useState } from "react";
+import { Subject } from "../../types/student";
+import { useState } from "react";
+import AssessementList from "../Modals/AssessementList";
 
 interface Props {
     subject: Subject;
@@ -11,7 +12,8 @@ interface Props {
 
 export default function SingleGradeRow({ subject, setGrades, index, setHasDataChanged }: Props) {
 
-    const [commentWordCount, setCommentWordCount] = useState<number>(0)
+    const [commentWordCount, setCommentWordCount] = useState<number>(0);
+    const [showAsssessmentModal, setShowAssessmentModal] = useState<boolean>(false)
 
     // find update the subject and put it in the use state with spread. Need to find it and replace
     function handleUpdate(value: string) {
@@ -62,12 +64,23 @@ export default function SingleGradeRow({ subject, setGrades, index, setHasDataCh
 
     return (
         <div>
+            {showAsssessmentModal &&
+                <AssessementList
+                    title={`${subject.name}`}
+                    closeModal={() => setShowAssessmentModal(false)}
+                    assessmentList={subject.assessments}
+                />
+            }
             {/* Title and percentage */}
             <div className='flex justify-between items-end'>
                 <div className='flex justify-center items-center mt-3'>
-                    <h3 className='text-[.85rem] text-gray-800'>{subject.name}</h3>
-                    {(subject.name === 'Mathematics' || subject.name === 'Reading' || subject.name === 'Writing') &&
-                        <p className='text-[.75rem] ml-2 text-gray-700 italic'>({subject.grade}%)</p>
+                    {(subject.name === 'Mathematics' || subject.name === 'Reading' || subject.name === 'Writing') ?
+                        <>
+                            <h3 onClick={() => setShowAssessmentModal(true)} className='text-[.85rem] text-gray-800 cursor-pointer underline'>{subject.name}</h3>
+                            <p className='text-[.75rem] ml-2 text-gray-700 italic '>({subject.grade}%)</p>
+                        </>
+                        :
+                        <h3 className='text-[.85rem] text-gray-800'>{subject.name}</h3>
                     }
                 </div>
                 {/* Grade Radio Buttons */}

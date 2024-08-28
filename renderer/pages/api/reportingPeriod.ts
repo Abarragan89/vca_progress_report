@@ -14,86 +14,97 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     res.status(400).json({ error: 'All fields are required' });
                 }
 
-
-                // Failing because user needs to be created first
-                const newReportingPeriod = await prisma.reportingPeriod.create({
-                    data: {
-                        name,
-                        date: new Date(reportDate),
-                        roomNumber,
-                        gradeLevel,
-                        studentReports: {
-                            create: studentData.map((student: any) => ({
-                                studentName: student.studentName,
-                                teacherName,
-                                absences: 0,
-                                tardies: 0,
-                                otherComments: '',
-                                date: new Date(reportDate),
-                                subjects: {
-                                    create: [
-                                        {
-                                            name: 'Mathematics',
-                                            grade: student.mathGrade,
-                                            comment: '',
-                                            status: student.mathGrade >= 70 ? 'Satisfactory' : 'Unsatisfactory',
-                                            assessments: {
-                                                create: Object.entries(student.mathAssessments).map(([testName, score]: [string, any]) => ({
-                                                    testName,
-                                                    score: parseInt(score, 10),
-                                                })),
+                // generate based on excel spreadsheet
+                if (studentData) {
+                    const newReportingPeriod = await prisma.reportingPeriod.create({
+                        data: {
+                            name,
+                            date: new Date(reportDate),
+                            roomNumber,
+                            gradeLevel,
+                            studentReports: {
+                                create: studentData.map((student: any) => ({
+                                    studentName: student.studentName,
+                                    teacherName,
+                                    absences: 0,
+                                    tardies: 0,
+                                    otherComments: '',
+                                    date: new Date(reportDate),
+                                    subjects: {
+                                        create: [
+                                            {
+                                                name: 'Mathematics',
+                                                grade: student.mathGrade,
+                                                comment: '',
+                                                status: student.mathGrade >= 70 ? 'Satisfactory' : 'Unsatisfactory',
+                                                assessments: {
+                                                    create: Object.entries(student.mathAssessments).map(([testName, score]: [string, any]) => ({
+                                                        testName,
+                                                        score: parseInt(score, 10),
+                                                    })),
+                                                },
                                             },
-                                        },
-                                        {
-                                            name: 'Reading',
-                                            grade: student.readingGrade,
-                                            comment: '',
-                                            status: student.readingGrade >= 70 ? 'Satisfactory' : 'Unsatisfactory',
-                                            assessments: {
-                                                create: Object.entries(student.readingAssessments).map(([testName, score]: [string, any]) => ({
-                                                    testName,
-                                                    score: parseInt(score, 10),
-                                                })),
+                                            {
+                                                name: 'Reading',
+                                                grade: student.readingGrade,
+                                                comment: '',
+                                                status: student.readingGrade >= 70 ? 'Satisfactory' : 'Unsatisfactory',
+                                                assessments: {
+                                                    create: Object.entries(student.readingAssessments).map(([testName, score]: [string, any]) => ({
+                                                        testName,
+                                                        score: parseInt(score, 10),
+                                                    })),
+                                                },
                                             },
-                                        },
-                                        {
-                                            name: 'Writing',
-                                            grade: student.writingGrade,
-                                            comment: '',
-                                            status: student.writingGrade >= 70 ? 'Satisfactory' : 'Unsatisfactory',
-                                            assessments: {
-                                                create: Object.entries(student.writingAssessments).map(([testName, score]: [string, any]) => ({
-                                                    testName,
-                                                    score: parseInt(score, 10),
-                                                })),
+                                            {
+                                                name: 'Writing',
+                                                grade: student.writingGrade,
+                                                comment: '',
+                                                status: student.writingGrade >= 70 ? 'Satisfactory' : 'Unsatisfactory',
+                                                assessments: {
+                                                    create: Object.entries(student.writingAssessments).map(([testName, score]: [string, any]) => ({
+                                                        testName,
+                                                        score: parseInt(score, 10),
+                                                    })),
+                                                },
                                             },
-                                        },
-                                        {
-                                            name: 'Behavior',
-                                            grade: null,
-                                            comment: '',
-                                            status: null,
-                                        },
-                                        {
-                                            name: 'Work Habits',
-                                            grade: null,
-                                            comment: '',
-                                            status: null
-                                        },
-                                        {
-                                            name: 'Homework',
-                                            grade: null,
-                                            comment: '',
-                                            status: null
-                                        },
-                                    ],
-                                },
-                            })),
+                                            {
+                                                name: 'Behavior',
+                                                grade: null,
+                                                comment: '',
+                                                status: null,
+                                            },
+                                            {
+                                                name: 'Work Habits',
+                                                grade: null,
+                                                comment: '',
+                                                status: null
+                                            },
+                                            {
+                                                name: 'Homework',
+                                                grade: null,
+                                                comment: '',
+                                                status: null
+                                            },
+                                        ],
+                                    },
+                                })),
+                            },
                         },
-                    },
-                });
-                return res.json(newReportingPeriod)
-                // return NextResponse.json(newReportingPeriod, { status: 201 });
+                    });
+                    return res.json(newReportingPeriod)
+                } else {
+                    const newReportingPeriod = await prisma.reportingPeriod.create({
+                        data: {
+                            name,
+                            date: new Date(reportDate),
+                            roomNumber,
+                            gradeLevel
+                        },
+                    });
+                    return res.json(newReportingPeriod)
+                }
+                // Failing because user needs to be created first
             } catch (error) {
                 console.error('eeeeeerrroroooorrr', error);
                 throw new Error('Transaction failed, rolling back.');

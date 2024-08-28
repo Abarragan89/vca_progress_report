@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import CreateNewReport from "../components/Modals/CreateNewReport";
+import CreateNewReportPeriod from "../components/Modals/CreateNewReportPeriod";
 import DashboardReportingCard from "../components/DashboardReportingCard";
 import Navigation from "../components/Navigation";
 import MainBtn from "../components/Buttons/MainBtn";
@@ -31,12 +31,21 @@ export default function Home() {
 
   console.log(reportingPeriods)
 
+  async function deleteReportingPeriod(id: number) {
+    try {
+      const { data } = await axios.delete(`/api/singleReportingPeriod/${id}`)
+      setReportingPeriods(prevArr => prevArr.filter((singleResponse) => singleResponse.id !== data.id))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <main className='min-h-screen pt-16'>
       <Navigation />
       {showCreateReportModal &&
-        <CreateNewReport
-        setReportingPeriods={setReportingPeriods}
+        <CreateNewReportPeriod
+          setReportingPeriods={setReportingPeriods}
           closeModal={() => setShowCreateReportModal(false)}
         />
       }
@@ -55,6 +64,7 @@ export default function Home() {
             name={reportingPeriod.name}
             date={reportingPeriod.date}
             id={reportingPeriod.id}
+            deleteReportingPeriod={deleteReportingPeriod}
           />
         ))
         }

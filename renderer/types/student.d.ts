@@ -4,6 +4,9 @@ export interface ReportingPeriod {
     name: string;
 }
 
+export interface Assessments {
+    [key: string]: number
+}
 
 export interface Subject {
     comment: string;
@@ -12,6 +15,7 @@ export interface Subject {
     name: string;
     status: string | null
     studentReportId: number | null;
+    assessments: Assessments[]
 }
 
 export interface StudentData {

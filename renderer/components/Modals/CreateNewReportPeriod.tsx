@@ -12,7 +12,7 @@ interface Props {
 interface StudentData {
     [key: string]: any[]; // Key is a string (sheet name), value is an array of rows
 }
-export default function CreateNewReport({ closeModal, setReportingPeriods }: Props) {
+export default function CreateNewReportPeriod({ closeModal, setReportingPeriods }: Props) {
 
     const [studentData, setStudentData] = useState<File | null>(null)
     const [formattedStudentData, setFormattedStudentData] = useState<string>('');
@@ -45,15 +45,15 @@ export default function CreateNewReport({ closeModal, setReportingPeriods }: Pro
                     const groupedStudentData: any = []
                     for (let i = 0; i < rosterLength; i++) {
 
-                        const readingData = rawStudentData['MA(A) MathematicsMatemáticas'][i];
-                        const mathData = rawStudentData['WR(A) WritingComposición'][i];
+                        const mathData = rawStudentData['MA(A) MathematicsMatemáticas'][i];
                         const writingData = rawStudentData['WR(A) WritingComposición'][i];
+                        const readingData = rawStudentData['RE(A) ReadingLectura'][i];
 
                         const currentStudent = {
-                            studentName: rawStudentData['MA(A) MathematicsMatemáticas'][i][''],
-                            mathGrade: parseInt(rawStudentData['MA(A) MathematicsMatemáticas'][i]['T1'].split(' ')[1]),
-                            readingGrade: parseInt(rawStudentData['WR(A) WritingComposición'][i]['T1'].split(' ')[1]),
-                            writingGrade: parseInt(rawStudentData['RE(A) ReadingLectura'][i]['T1'].split(' ')[1]),
+                            studentName: mathData[''],
+                            mathGrade: parseInt(mathData['T1'].split(' ')[1]),
+                            writingGrade: parseInt(writingData['T1'].split(' ')[1]),
+                            readingGrade: parseInt(readingData['T1'].split(' ')[1]),
                             mathAssessments: Object.fromEntries(Object.entries(mathData).slice(2)),
                             writingAssessments: Object.fromEntries(Object.entries(writingData).slice(2)),
                             readingAssessments: Object.fromEntries(Object.entries(readingData).slice(2))
@@ -104,18 +104,18 @@ export default function CreateNewReport({ closeModal, setReportingPeriods }: Pro
                 <div className='flex justify-between'>
                     <div className="mb-5">
                         <label htmlFor="teacherName" className="block mb-2 text-sm font-medium text-[var(--text-color)]">Teacher:</label>
-                        <input type="text" id="teacherName" placeholder="Mrs. Johnson" onChange={(e) => setTeacherName(e.target.value)} className="bg-gray-50 border border-gray-300 w-[250px] text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 placeholder:italic" required />
+                        <input type="text" id="teacherName" placeholder="Mrs. Johnson" onChange={(e) => setTeacherName(e.target.value)} className="bg-gray-50 border border-gray-300 w-[200px] text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 placeholder:italic" required />
                     </div>
                     <div className="mb-5">
                         <label htmlFor="roomNumber" className="block mb-2 text-sm font-medium text-[var(--text-color)]">Room #:</label>
-                        <input type="number" id="roomNumber" min={0} placeholder="15" onChange={(e) => setRoomNumber(e.target.value)} className="bg-gray-50 border border-gray-300 w-[85px] text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 placeholder:italic" required />
+                        <input type="number" id="roomNumber" min={0} placeholder="15" onChange={(e) => setRoomNumber(e.target.value)} className="bg-gray-50 border border-gray-300 w-[85px] text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 placeholder:italic" required />
                     </div>
                 </div>
 
                 <div className='flex justify-between'>
                     <div>
                         <label htmlFor="countries" className="block mb-2 text-sm font-medium text-gray-900">Trimester:</label>
-                        <select onChange={(e) => setReportingPeriodName(e.target.value)} id="countries" className="bg-gray-50 w-[120px] border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <select onChange={(e) => setReportingPeriodName(e.target.value)} id="countries" className="bg-gray-50 w-[120px] border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" required>
                             <option value='Trimester 1'>Trimester 1</option>
                             <option value='Trimester 2'>Trimester 2</option>
                             <option value='Trimester 3'>Trimester 3</option>
@@ -124,12 +124,12 @@ export default function CreateNewReport({ closeModal, setReportingPeriods }: Pro
 
                     <div className="mb-5">
                         <label htmlFor="date" className="block mb-2 text-sm font-medium text-[var(--text-color)]">Date:</label>
-                        <input type="date" id="date" onChange={(e) => setReportingPeriodDate(e.target.value)} className="bg-gray-50 w-[125px] border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2" required />
+                        <input type="date" id="date" onChange={(e) => setReportingPeriodDate(e.target.value)} className="bg-gray-50 w-[125px] border border-gray-300 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2" required />
                     </div>
 
                     <div>
                         <label htmlFor="countries" className="block mb-2 text-sm font-medium text-gray-900">Grade:</label>
-                        <select onChange={(e) => setGradeLevel(e.target.value)} id="countries" className="bg-gray-50 w-[85px] border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <select onChange={(e) => setGradeLevel(e.target.value)} id="countries" className="bg-gray-50 w-[85px] border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" required>
                             <option>TK</option>
                             <option>Kindergarten</option>
                             <option>1</option>
@@ -149,11 +149,7 @@ export default function CreateNewReport({ closeModal, setReportingPeriods }: Pro
                 </div>
 
                 <div className='flex justify-center'>
-                    <MainBtn
-                        clickHandler={handleSubmit}
-                        disabled={false}
-                        text={'Create'}
-                    />
+                <button type='submit' className='bg-blue-700 hover:bg-blue-800 focus:ring-1 focus:outline-none focus:ring-blue-100 text-gray-100 font-medium rounded-lg text-sm sm:w-auto px-4 py-[7px] text-center mt-2'>Create</button>
                 </div>
             </form>
 

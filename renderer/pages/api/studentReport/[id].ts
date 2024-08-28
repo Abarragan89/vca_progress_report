@@ -3,13 +3,14 @@ import { prisma } from '../../../utils/prisma';
 import { Subject } from '@prisma/client';
 
 export default async function Handler(req: NextApiRequest, res: NextApiResponse) {
-    if (req.method === 'PUT') {
-        let { id: reportId } = req.query
-        reportId = reportId as string;
+    let { id: reportId } = req.query
+    reportId = reportId as string;
 
-        if (!reportId) {
-            return res.status(400).json({ error: 'User ID is required' });
-        }
+    if (!reportId) {
+        return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    if (req.method === 'PUT') {
 
         const { data } = await req.body
         const { absences, tardies, grades, studentName, otherComments } = data;
@@ -41,6 +42,18 @@ export default async function Handler(req: NextApiRequest, res: NextApiResponse)
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Internal server error' });
+        }
+    } else if (req.method === 'DELETE') {
+        try {
+            const updatedUser = await prisma.studentReport.delete({
+                where: { id: parseInt(reportId) }
+            });
+
+            res.status(200).json(updatedUser)
+
+        } catch (error) {
+            console.log('error ', error)
+            res.status(500).json(error)
         }
     }
 }

@@ -8,9 +8,10 @@ import axios from "axios";
 interface Props {
     studentReport: StudentData
     setStudentData: React.Dispatch<React.SetStateAction<StudentData[]>>;
+    deleteReportHandler: (id: number) => Promise<void>;
 }
 
-export default function StudentReportForm({ studentReport, setStudentData }: Props) {
+export default function StudentReportForm({ studentReport, setStudentData, deleteReportHandler }: Props) {
 
     const [grades, setGrades] = useState<Subject[]>([]);
     const [absences, setAbsences] = useState<number>(0);
@@ -18,9 +19,7 @@ export default function StudentReportForm({ studentReport, setStudentData }: Pro
     const [studentName, setStudentName] = useState<string>('');
     const [hasDataChanged, setHasDataChanged] = useState<boolean>(false);
     const [otherComments, setOtherComments] = useState<string>('');
-    // const [mathAssessments, setMathAssessments] = useState<>()
-
-    console.log('student report ;ajidsf', studentReport)
+    const [confirmDelete, setConfirmDelete] = useState<boolean>(false)
 
     useEffect(() => {
         if (studentReport) setGrades(studentReport.subjects)
@@ -29,8 +28,6 @@ export default function StudentReportForm({ studentReport, setStudentData }: Pro
         if (studentReport?.studentName) setStudentName(studentReport.studentName)
         if (studentReport?.otherComments) setOtherComments(studentReport.otherComments)
     }, [studentReport])
-
-    // console.log('math assessments ', mathAssessments)
 
     async function handleSubmit() {
         try {
@@ -59,7 +56,7 @@ export default function StudentReportForm({ studentReport, setStudentData }: Pro
     }
 
     return (
-        <article className='relative bg-blue-100 m-4 rounded-[5px] w-[460px]'>
+        <article className='relative bg-blue-100 m-6 rounded-[5px] w-[460px]'>
             <input type="text" value={studentName} onChange={(e) => {
                 setStudentName(e.target.value)
                 setHasDataChanged(true)
@@ -123,12 +120,29 @@ export default function StudentReportForm({ studentReport, setStudentData }: Pro
                 </div>
 
             </form>
-            <div className="flex justify-center mb-3 mt-1">
+            <div className="flex justify-around w-[70%] mb-3 mt-3 mx-auto">
                 <MainBtn
                     text={hasDataChanged ? 'Save' : 'Saved'}
                     disabled={!hasDataChanged}
                     clickHandler={handleSubmit}
                 />
+                {confirmDelete ?
+                    <MainBtn
+                        text={'Confirm Delete'}
+                        disabled={false}
+                        red={true}
+                        //@ts-ignore
+                        clickHandler={() => deleteReportHandler(studentReport.id)}
+                    />
+                    :
+                    <MainBtn
+                        text={'Delete'}
+                        disabled={false}
+                        red={true}
+                        //@ts-ignore
+                        clickHandler={() => setConfirmDelete(true)}
+                    />
+                }
             </div>
         </article>
     )
