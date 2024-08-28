@@ -1,5 +1,5 @@
-appId: com.villageReports.nextron
-productName: Village Reports
+appId: com.village_reports.myapp
+productName: VillageReports
 copyright: Copyright © 2024 Anthony Barragan
 directories:
   output: dist
